@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Gemeinsames Formularhandling für alle drei Seiten
+    // Formularverarbeitung auf den Eingabeseiten
     const form = document.getElementById('challengeForm');
     if (form) {
         form.addEventListener('submit', function (event) {
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const challenge = document.getElementById('challenge').value;
             localStorage.setItem('challenge', challenge);
 
-            // Zielseite anhand des data-target-Attributs bestimmen
             const target = form.getAttribute('data-target');
             if (target) {
                 window.location.href = target;
@@ -16,29 +15,46 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Anzeige auf der jeweiligen Ergebnis-Seite
+    // Ergebnisverarbeitung auf den Result-Seiten
     const resultOutput = document.getElementById('resultText');
     const copyButton = document.getElementById('copyButton');
 
     if (resultOutput) {
         const challenge = localStorage.getItem('challenge') || '[keine Herausforderung eingegeben]';
-
-        // Prompt dynamisch erzeugen – kann je nach Seite variiert werden
         const page = window.location.pathname;
         let prompt = '';
 
         if (page.includes('result-herausforderung.html')) {
-            prompt = `Hier ist eine Herausforderung: ${challenge}. Entwickle drei kreative Lösungsideen.`;
+            // Prompt für sokratischen Dialog
+            prompt = `Beginne einen sokratischen Dialog zum folgenden Thema: ${challenge}.
+Stelle mir eine erste kluge, vertiefende Frage.
+Warte dann auf meine Antwort.
+Erst danach stellst du die nächste Frage – offen, nachdenklich, anregend.
+Gib keine Antworten, sondern unterstütze mich dabei, durch deine Fragen eigene Einsichten zu entwickeln.
+Wiederhole diesen Prozess, bis ich den Dialog beende.`;
         } else if (page.includes('result-spiel.html')) {
-            prompt = `Spiele ein kreatives Spiel basierend auf dieser Herausforderung: ${challenge}. Erfinde eine passende Spielmechanik.`;
+            // Prompt für Spiel-PingPong
+            prompt = `Wir spielen ein kreatives Ideen-PingPong.
+Die Herausforderung lautet: ${challenge}.
+Du beginnst, indem du mich bittest, eine erste Idee in Stichpunkten zu nennen.
+Erst danach nennst du selbst eine Idee.
+Dann forderst du mich direkt zur nächsten Idee auf – und so weiter.
+Die Ideen sollen möglichst kurz, überraschend und unterschiedlich sein.
+Wiederhole den Wechsel so lange, bis ich aufhöre zu spielen.`;
         } else if (page.includes('result-methoden.html')) {
-            prompt = `Remixe eine bekannte Methode, um diese Herausforderung zu lösen: ${challenge}. Beschreibe den Ablauf in drei Schritten.`;
+            // Prompt für SCAMPER-Methode
+            prompt = `Nutze die SCAMPER-Methode, um kreative Ideen zur folgenden Herausforderung zu entwickeln:
+"${challenge}"
+Für jeden der sieben SCAMPER-Schritte (Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse)
+sollst du jeweils drei kurze, ungewöhnliche und kreative Ideen liefern.
+Liste die Ideen geordnet nach den SCAMPER-Buchstaben auf.`;
+
         }
 
         resultOutput.textContent = prompt;
     }
 
-    // Kopierfunktion
+    // Kopieren ermöglichen
     if (copyButton) {
         copyButton.addEventListener('click', function () {
             const textToCopy = document.getElementById('resultText').innerText;
